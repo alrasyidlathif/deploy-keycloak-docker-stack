@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  keycloak:
+    image: "quay.io/keycloak/keycloak:17.0.0"
+    command: start-dev
+    ports:
+      - "1234:8080"
+    env_file:
+      - "./.env"
+    deploy:
+      mode: replicated
+      replicas: 1
+      endpoint_mode: vip
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: any
+        max_attempts: 3
+        window: 120s
+    networks:
+      - keycloak-cluster
+
+networks:
+  keycloak-cluster:
+    external: true
